@@ -1,0 +1,52 @@
+# Deploying
+```
+apiVersion: apps/v1 
+kind: Deployment       
+metadata:
+  name: devops-regapp
+  labels: 
+     app: regapp       
+
+spec:
+  replicas: 3          
+  selector:
+    matchLabels:
+      app: regapp
+
+  template:
+    metadata:          
+      labels:
+        app: regapp
+    spec:
+      containers:      
+      - name: regapp   
+        image: patvon/regapp
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+  strategy:               
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+```
+
+
+Service file:
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: devops-service
+  labels:
+    app: regapp 
+spec:
+  selector:            
+    app: regapp 
+
+  ports:
+    - port: 8080
+      targetPort: 8080
+
+  type: LoadBalancer
+```
